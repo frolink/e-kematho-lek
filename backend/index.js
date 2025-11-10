@@ -1,10 +1,11 @@
 /**
  * Simple backend for e-kematho-lek (Pi SDK demo-style)
  * - Endpoint: POST /verify  (verifikasi access token dari Pi)
- * - Endpoint: GET /        (health)
+ * - Endpoint: GET /         (health check)
  *
- * Put your validation-key.txt (from Pi Developer Portal) into backend/validation-key.txt
- * Configure env in backend/.env (see .env.example)
+ * Letakkan file `validation-key.txt` (dari Pi Developer Portal)
+ * di dalam folder backend/
+ * Konfigurasikan environment di backend/.env (lihat .env.example)
  */
 
 require('dotenv').config();
@@ -21,35 +22,36 @@ app.use(express.json());
 const PORT = process.env.BACKEND_PORT || 5000;
 const VALIDATION_KEY_PATH = process.env.VALIDATION_KEY_PATH || path.join(__dirname, 'validation-key.txt');
 
+// Endpoint utama
 app.get('/', (req, res) => {
   res.send('💜 e-kematho-lek API aktif dan berjalan.');
 });
 
 // POST /verify
-// Body: { accessToken: "<token-from-frontend>" }
+// Body: { accessToken: "<token-dari-frontend>" }
 app.post('/verify', async (req, res) => {
   const { accessToken } = req.body;
   if (!accessToken) return res.status(400).json({ error: 'accessToken diperlukan' });
 
   try {
-    // contoh panggilan verifikasi ke Pi API (public user info)
+    // Panggilan verifikasi ke Pi API (mendapatkan info user)
     const resp = await axios.get('https://api.minepi.com/v2/me', {
       headers: { Authorization: `Bearer ${accessToken}` },
       timeout: 7000
     });
 
-    // resp.data berisi info user (sesuai Pi API)
     return res.json({ success: true, user: resp.data });
   } catch (err) {
     console.error('Verifikasi accessToken gagal:', err?.response?.data || err.message);
-    return res.status(401).json({ success: false, error: 'Token tidak valid / gagal diverifikasi' });
+    return res.status(401).json({ success: false, error: 'Token tidak valid atau verifikasi gagal' });
   }
 });
 
+// Jalankan server
 app.listen(PORT, () => {
   console.log(`🚀 e-kematho-lek API berjalan di port ${PORT}`);
-  // warn if validation-key not present (portal will give you this file after registering app)
+
   if (!fs.existsSync(VALIDATION_KEY_PATH)) {
-    console.warn('⚠️ validation-key.txt TIDAK DITEMUKAN. Letakkan file dari Pi Developer Portal di:', VALIDATION_KEY_PATH);
+    console.warn('⚠️  validation-key.txt TIDAK DITEMUKAN. Letakkan file dari Pi Developer Portal di folder backend/');
   }
 });

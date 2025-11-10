@@ -8,7 +8,7 @@
     <!-- Pi SDK -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script>
-      // init Pi SDK for sandbox (testing). For production remove sandbox:true and use developer config.
+      // init Pi SDK for sandbox (testing). For production remove sandbox:true
       window.addEventListener('load', () => {
         if (window.Pi && typeof Pi.init === 'function') {
           try {
@@ -18,7 +18,7 @@
             console.error("❌ Pi SDK init error:", e);
           }
         } else {
-          console.warn("⚠️ window.Pi tidak tersedia (bukan Pi Browser atau SDK belum dimuat).");
+          console.warn("⚠️ window.Pi tidak tersedia (bukan Pi Browser atau SDK environment).");
         }
       });
     </script>
