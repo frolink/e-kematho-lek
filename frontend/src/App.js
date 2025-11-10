@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
+const API_BASE = 'https://e-kematho-backend.vercel.app';
 
 function App() {
   const [status, setStatus] = useState('Memeriksa SDK...');
